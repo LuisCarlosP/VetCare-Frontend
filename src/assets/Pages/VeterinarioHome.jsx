@@ -1,9 +1,10 @@
-import React, { useEffect } from "react";
-import { Container, Button, Card, Row, Col } from "react-bootstrap";
+import React, { useEffect, useState } from "react";
+import { Container, Button, Card, Row, Col, Modal } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 
 const VeterinarioHome = () => {
   const navigate = useNavigate();
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     const rol = localStorage.getItem("rol");
@@ -17,8 +18,9 @@ const VeterinarioHome = () => {
     navigate("/login");
   };
 
-  const handleCitas = () => {
-    navigate("/citas");
+  const handleUsuario = () => {
+    const id_usuario = localStorage.getItem("id_usuario");
+    navigate(`/editar-usuario/${id_usuario}`); 
   };
 
   const handleMascotas = () => {
@@ -33,8 +35,8 @@ const VeterinarioHome = () => {
 
         <Row className="mt-4">
           <Col>
-            <Button variant="info" className="w-100" onClick={handleCitas}>
-              Gestionar Citas
+            <Button variant="info" className="w-100" onClick={handleUsuario}>
+              Editar Perfil
             </Button>
           </Col>
         </Row>
@@ -48,12 +50,27 @@ const VeterinarioHome = () => {
 
         <Row className="mt-3">
           <Col>
-            <Button variant="danger" className="w-100" onClick={handleLogout}>
+            <Button variant="danger" className="w-100" onClick={() => setShowModal(true)}>
               Cerrar Sesión
             </Button>
           </Col>
         </Row>
       </Card>
+
+      <Modal show={showModal} onHide={() => setShowModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Confirmar Cierre de Sesión</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>¿Estás seguro de que deseas cerrar sesión?</Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowModal(false)}>
+            Cancelar
+          </Button>
+          <Button variant="danger" onClick={handleLogout}>
+            Cerrar Sesión
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </Container>
   );
 };

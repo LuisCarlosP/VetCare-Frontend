@@ -10,7 +10,7 @@ const MascotasVeterinario = () => {
   const [loading, setLoading] = useState(true);
   const [searchId, setSearchId] = useState("");
   const [filteredMascotas, setFilteredMascotas] = useState([]);
-  const rol = localStorage.getItem("rol"); // Se asume que el rol está almacenado en localStorage
+  const rol = localStorage.getItem("rol");
 
   useEffect(() => {
     if (rol?.toLowerCase() !== "veterinario") {

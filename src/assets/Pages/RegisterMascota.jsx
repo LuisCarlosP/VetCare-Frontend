@@ -139,16 +139,6 @@ const RegisterMascota = () => {
             />
           </Form.Group>
 
-          <Form.Group className="mb-3" controlId="formBasicDescripcion">
-            <Form.Label>Descripción</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="Descripción de la mascota (opcional)"
-              value={descripcion}
-              onChange={(e) => setDescripcion(e.target.value)}
-            />
-          </Form.Group>
-
           <Form.Group className="mb-3" controlId="formBasicPeso">
             <Form.Label>Peso (kg)</Form.Label>
             <Form.Control

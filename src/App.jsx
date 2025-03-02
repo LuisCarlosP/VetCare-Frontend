@@ -8,6 +8,7 @@ import RegisterMascota from "./assets/Pages/RegisterMascota";
 import Mascotas from "./assets/Pages/Mascotas";
 import EditarMascota from "./assets/Pages/EditarMascota";
 import MascotasVeterinario from "./assets/Pages/MascotasVeterinario"; 
+import EditarUsuario from "./assets/Pages/EditarUsuario";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
         <Route path="/mascotas" element={<Mascotas />} />
         <Route path="/editar-mascota/:id" element={<EditarMascota />} />
         <Route path="/mascotas-veterinario" element={<MascotasVeterinario />} />
+        <Route path="/editar-usuario/:id" element={<EditarUsuario />} />
         <Route path="/404" element={<NotFound />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
