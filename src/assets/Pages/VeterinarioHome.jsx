@@ -22,7 +22,7 @@ const VeterinarioHome = () => {
   };
 
   const handleMascotas = () => {
-    navigate("/mascotas");
+    navigate("/mascotas-veterinario");
   };
 
   return (

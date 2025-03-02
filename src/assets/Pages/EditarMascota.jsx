@@ -1,16 +1,19 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { Container, Form, Button, Alert, Spinner, Modal } from "react-bootstrap";
 
 const EditarMascota = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { id } = useParams();
   const [mascota, setMascota] = useState(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
-  const id_usuario = localStorage.getItem("id_usuario"); // ID del usuario logueado
-  const rol = localStorage.getItem("rol"); // Rol del usuario (esto debe estar en el localStorage)
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+
+  const id_usuario = localStorage.getItem("id_usuario");
+  const rol = localStorage.getItem("rol");
 
   useEffect(() => {
     const fetchMascota = async () => {
@@ -19,6 +22,11 @@ const EditarMascota = () => {
         const data = await response.json();
 
         if (response.ok) {
+          if (rol?.toLowerCase() !== "veterinario" && data.idUsuario !== Number(id_usuario)) {
+            setError("No tienes permiso para editar esta mascota.");
+            setLoading(false);
+            return;
+          }
           setMascota(data);
         } else {
           setError("No se pudo cargar la información de la mascota.");
@@ -32,22 +40,34 @@ const EditarMascota = () => {
     };
 
     fetchMascota();
-  }, [id]);
+  }, [id, id_usuario, rol]);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
+    setShowConfirmModal(true);
+  };
+
+  const handleConfirmSubmit = async () => {
+    setShowConfirmModal(false);
     try {
       const response = await fetch(`http://localhost:8080/api/mascotas/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
+          "id_usuario": id_usuario,
+          "rol": rol,
         },
         body: JSON.stringify(mascota),
       });
 
       if (response.ok) {
-        navigate("/mascotas");
+        if (rol && rol.toLowerCase() === "veterinario") {
+          navigate("/mascotas-veterinario");
+        } else {
+          navigate("/mascotas");
+        }
       } else {
+        console.error("Error en la respuesta del servidor:", await response.text());
         setError("Hubo un error al editar la mascota.");
       }
     } catch (error) {
@@ -60,11 +80,20 @@ const EditarMascota = () => {
     try {
       const response = await fetch(`http://localhost:8080/api/mascotas/${id}`, {
         method: "DELETE",
+        headers: {
+          "id_usuario": id_usuario,
+          "rol": rol,
+        },
       });
 
       if (response.ok) {
-        navigate("/mascotas");
+        if (rol && rol.toLowerCase() === "veterinario") {
+          navigate("/mascotas-veterinario");
+        } else {
+          navigate("/mascotas");
+        }
       } else {
+        console.error("Error en la respuesta del servidor:", await response.text());
         setError("Hubo un error al eliminar la mascota.");
       }
     } catch (error) {
@@ -84,7 +113,6 @@ const EditarMascota = () => {
     );
   }
 
-
   return (
     <Container className="my-5">
       <h2 className="text-center">Editar Mascota</h2>
@@ -97,7 +125,6 @@ const EditarMascota = () => {
             <Form.Label>Nombre</Form.Label>
             <Form.Control
               type="text"
-              placeholder="Ingrese el nombre de la mascota"
               value={mascota.nombre}
               onChange={(e) => setMascota({ ...mascota, nombre: e.target.value })}
               required
@@ -108,7 +135,6 @@ const EditarMascota = () => {
             <Form.Label>Especie</Form.Label>
             <Form.Control
               type="text"
-              placeholder="Ingrese la especie de la mascota"
               value={mascota.especie}
               onChange={(e) => setMascota({ ...mascota, especie: e.target.value })}
               required
@@ -119,7 +145,6 @@ const EditarMascota = () => {
             <Form.Label>Raza</Form.Label>
             <Form.Control
               type="text"
-              placeholder="Ingrese la raza de la mascota"
               value={mascota.raza}
               onChange={(e) => setMascota({ ...mascota, raza: e.target.value })}
             />
@@ -129,7 +154,6 @@ const EditarMascota = () => {
             <Form.Label>Edad</Form.Label>
             <Form.Control
               type="number"
-              placeholder="Ingrese la edad de la mascota"
               value={mascota.edad}
               onChange={(e) => setMascota({ ...mascota, edad: e.target.value })}
             />
@@ -139,7 +163,6 @@ const EditarMascota = () => {
             <Form.Label>Peso</Form.Label>
             <Form.Control
               type="number"
-              placeholder="Ingrese el peso de la mascota"
               value={mascota.peso}
               onChange={(e) => setMascota({ ...mascota, peso: e.target.value })}
             />
@@ -161,12 +184,19 @@ const EditarMascota = () => {
         </Modal.Header>
         <Modal.Body>¿Estás seguro de que deseas eliminar esta mascota?</Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseModal}>
-            Cancelar
-          </Button>
-          <Button variant="danger" onClick={handleDelete}>
-            Eliminar
-          </Button>
+          <Button variant="secondary" onClick={handleCloseModal}>Cancelar</Button>
+          <Button variant="danger" onClick={handleDelete}>Eliminar</Button>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal show={showConfirmModal} onHide={() => setShowConfirmModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Confirmar Cambios</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>¿Estás seguro de que deseas guardar los cambios?</Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowConfirmModal(false)}>Cancelar</Button>
+          <Button variant="primary" onClick={handleConfirmSubmit}>Guardar</Button>
         </Modal.Footer>
       </Modal>
     </Container>
