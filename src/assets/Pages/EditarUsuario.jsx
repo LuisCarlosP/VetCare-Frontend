@@ -9,6 +9,9 @@ const EditarUsuario = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleteConfirmation, setDeleteConfirmation] = useState("");
+  const [deleteError, setDeleteError] = useState("");
 
   const id_usuario = localStorage.getItem("id_usuario");
 
@@ -68,6 +71,34 @@ const EditarUsuario = () => {
     }
   };
 
+  const handleDelete = async () => {
+    if (deleteConfirmation === "CONFIRMAR") {
+      try {
+        const response = await fetch(`http://localhost:8080/api/usuarios/${id}`, {
+          method: "DELETE",
+          headers: {
+            "id_usuario": id_usuario,
+          },
+        });
+
+        if (response.ok) {
+          localStorage.removeItem("rol");
+          localStorage.removeItem("id_usuario");
+          navigate("/login");
+        } else {
+          setDeleteError("Hubo un error al eliminar el usuario.");
+        }
+      } catch (error) {
+        setDeleteError("Hubo un error al eliminar el usuario.");
+      } finally {
+        setShowDeleteModal(false);
+      }
+    } else {
+      setDeleteError("Debes escribir 'CONFIRMAR' para eliminar la cuenta.");
+    }
+  };
+
+
   if (loading) {
     return (
       <Container className="d-flex justify-content-center align-items-center vh-100">
@@ -81,6 +112,7 @@ const EditarUsuario = () => {
       <h2 className="text-center">Editar Usuario</h2>
 
       {error && <Alert variant="danger">{error}</Alert>}
+      {deleteError && <Alert variant="danger">{deleteError}</Alert>}
 
       {usuario && (
         <Form onSubmit={handleSubmit}>
@@ -135,6 +167,14 @@ const EditarUsuario = () => {
           <Button variant="primary" type="submit" className="mt-4">
             Guardar Cambios
           </Button>
+
+          <Button
+            variant="danger"
+            onClick={() => setShowDeleteModal(true)}
+            className="mt-4 ms-3"
+          >
+            Eliminar Cuenta
+          </Button>
         </Form>
       )}
 
@@ -149,6 +189,29 @@ const EditarUsuario = () => {
           </Button>
           <Button variant="primary" onClick={handleConfirmSubmit}>
             Guardar
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Confirmar Eliminación</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <p>Escribe <strong>CONFIRMAR</strong> para eliminar tu cuenta.</p>
+          <Form.Control
+            type="text"
+            value={deleteConfirmation}
+            onChange={(e) => setDeleteConfirmation(e.target.value)}
+          />
+          {deleteError && <Alert variant="danger" className="mt-2">{deleteError}</Alert>}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
+            Cancelar
+          </Button>
+          <Button variant="danger" onClick={handleDelete}>
+            Eliminar Cuenta
           </Button>
         </Modal.Footer>
       </Modal>

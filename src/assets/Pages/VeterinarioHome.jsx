@@ -15,6 +15,7 @@ const VeterinarioHome = () => {
 
   const handleLogout = () => {
     localStorage.removeItem("rol");
+    localStorage.removeItem("id_usuario");
     navigate("/login");
   };
 
