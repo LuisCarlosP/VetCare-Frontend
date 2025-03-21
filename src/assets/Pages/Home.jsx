@@ -34,9 +34,6 @@ const Home = () => {
         <p>¡Has iniciado sesión exitosamente!</p>
 
         <Nav className="flex-column mb-4">
-          <Button variant="info" className="mb-2" onClick={() => navigate("/agregar-cita")}>
-            📅 Agendar Cita
-          </Button>
           <Button variant="primary" className="mb-2" onClick={() => navigate("/mascotas")}>
             🐶 Mis Mascotas
           </Button>
