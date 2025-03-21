@@ -13,7 +13,7 @@ import Veterinarios from "./assets/Pages/Veterinarios";
 
 function App() {
   return (
-    <Router>
+    <Router basename="/VetCare-Frontend">
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/login" element={<Login />} />

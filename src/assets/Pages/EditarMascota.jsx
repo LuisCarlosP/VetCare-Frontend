@@ -18,7 +18,8 @@ const EditarMascota = () => {
   useEffect(() => {
     const fetchMascota = async () => {
       try {
-        const response = await fetch(`http://localhost:8080/api/mascotas/${id}`);
+        const apiUrl = import.meta.env.VITE_API_URL; 
+        const response = await fetch(`${apiUrl}/api/mascotas/${id}`);
         const data = await response.json();
 
         if (response.ok) {
@@ -50,7 +51,8 @@ const EditarMascota = () => {
   const handleConfirmSubmit = async () => {
     setShowConfirmModal(false);
     try {
-      const response = await fetch(`http://localhost:8080/api/mascotas/${id}`, {
+      const apiUrl = import.meta.env.VITE_API_URL; 
+      const response = await fetch(`${apiUrl}/api/mascotas/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -78,7 +80,8 @@ const EditarMascota = () => {
 
   const handleDelete = async () => {
     try {
-      const response = await fetch(`http://localhost:8080/api/mascotas/${id}`, {
+      const apiUrl = import.meta.env.VITE_API_URL; 
+      const response = await fetch(`${apiUrl}/api/mascotas/${id}`, {
         method: "DELETE",
         headers: {
           "id_usuario": id_usuario,

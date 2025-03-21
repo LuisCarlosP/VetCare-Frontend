@@ -20,10 +20,11 @@ const Mascotas = () => {
 
   const fetchMascotas = async (idUsuario) => {
     try {
-      const url = `http://localhost:8080/api/mascotas/usuario/${idUsuario}`;
+      const apiUrl = import.meta.env.VITE_API_URL; 
+      const url = `${apiUrl}/api/mascotas/usuario/${idUsuario}`;  
       const response = await fetch(url);
       const data = await response.json();
-
+  
       if (response.ok) {
         setMascotas(data);
       } else {
@@ -36,14 +37,16 @@ const Mascotas = () => {
       setLoading(false);
     }
   };
+  
 
   const handleDelete = async (idMascota) => {
     try {
-      const url = `http://localhost:8080/api/mascotas/${idMascota}`;
+      const apiUrl = import.meta.env.VITE_API_URL;  
+      const url = `${apiUrl}/api/mascotas/${idMascota}`;  
       const response = await fetch(url, {
         method: "DELETE",
       });
-
+  
       if (response.ok) {
         setMascotas(mascotas.filter((mascota) => mascota.idMascota !== idMascota));
       } else {
@@ -54,7 +57,7 @@ const Mascotas = () => {
       setError("Hubo un error al eliminar la mascota.");
     }
   };
-
+  
   return (
     <Container className="d-flex justify-content-center align-items-center vh-100">
       <Card

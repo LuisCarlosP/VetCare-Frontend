@@ -17,7 +17,8 @@ const Veterinarios = () => {
 
   const fetchVeterinarios = async () => {
     try {
-      const url = "http://localhost:8080/api/usuarios/veterinarios";
+      const apiUrl = import.meta.env.VITE_API_URL;
+      const url = `${apiUrl}/api/usuarios/veterinarios`;
       const response = await fetch(url);
       const data = await response.json();
 

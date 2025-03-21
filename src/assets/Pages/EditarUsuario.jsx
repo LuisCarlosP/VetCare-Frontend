@@ -18,9 +18,9 @@ const EditarUsuario = () => {
   useEffect(() => {
     const fetchUsuario = async () => {
       try {
-        const response = await fetch(`http://localhost:8080/api/usuarios/${id}`);
+        const apiUrl = import.meta.env.VITE_API_URL; 
+        const response = await fetch(`${apiUrl}/api/usuarios/${id}`);
         const data = await response.json();
-
         if (response.ok) {
           if (Number(id_usuario) !== data.id_usuario) {
             setError("No tienes permiso para editar este usuario.");
@@ -50,7 +50,8 @@ const EditarUsuario = () => {
   const handleConfirmSubmit = async () => {
     setShowConfirmModal(false);
     try {
-      const response = await fetch(`http://localhost:8080/api/usuarios/${id}`, {
+      const apiUrl = import.meta.env.VITE_API_URL;
+      const response = await fetch(`${apiUrl}/api/usuarios/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -74,7 +75,8 @@ const EditarUsuario = () => {
   const handleDelete = async () => {
     if (deleteConfirmation === "CONFIRMAR") {
       try {
-        const response = await fetch(`http://localhost:8080/api/usuarios/${id}`, {
+        const apiUrl = import.meta.env.VITE_API_URL;
+        const response = await fetch(`${apiUrl}/api/usuarios/${id}`, {
           method: "DELETE",
           headers: {
             "id_usuario": id_usuario,

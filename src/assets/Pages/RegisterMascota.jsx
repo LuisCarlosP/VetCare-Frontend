@@ -41,7 +41,8 @@ const RegisterMascota = () => {
     };
 
     try {
-      const response = await fetch("http://localhost:8080/api/mascotas/register-mascota", {
+      const apiUrl = import.meta.env.VITE_API_URL;
+      const response = await fetch(`${apiUrl}/api/mascotas/register-mascota`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

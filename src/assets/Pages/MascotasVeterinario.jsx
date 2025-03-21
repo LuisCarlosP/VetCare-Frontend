@@ -22,10 +22,11 @@ const MascotasVeterinario = () => {
 
   const fetchMascotas = async () => {
     try {
-      const url = "http://localhost:8080/api/mascotas";
+      const apiUrl = import.meta.env.VITE_API_URL; 
+      const url = `${apiUrl}/api/mascotas`;  
       const response = await fetch(url);
       const data = await response.json();
-
+  
       if (response.ok) {
         setMascotas(data);
         setFilteredMascotas(data);
@@ -39,6 +40,7 @@ const MascotasVeterinario = () => {
       setLoading(false);
     }
   };
+  
 
   const handleSearch = (e) => {
     const searchTerm = e.target.value;
